@@ -1,4 +1,4 @@
-# 🏥 Construcción de Software II – Proyecto Veterinaria  
+# Construcción de Software II – Proyecto Veterinaria  
 **Repositorio:** Construccion2-JCenteno-FChirivi-AOrtiz  
 
 ---
@@ -11,5 +11,5 @@
 | **Alejandro Ortiz Acevedo**         | Desarrollador  |
 
 ## Tecnología utilizada  
-- **Lenguaje:** Java ☕  
-- **Framework:** Spring Boot 🌱  
+- **Lenguaje:** Java  
+- **Framework:** Spring Boot 
