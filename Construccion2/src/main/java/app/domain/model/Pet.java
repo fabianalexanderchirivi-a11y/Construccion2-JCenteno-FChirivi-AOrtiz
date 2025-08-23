@@ -1,6 +1,6 @@
 package app.domain.model;
 
-import app.domain.model.enu.Spices;
+import app.domain.model.enu.Species;
 
 public class Pet extends Person {
 
@@ -8,7 +8,7 @@ public class Pet extends Person {
 	private String name;
 	private int age;
 	private double weight;
-	private Spices spices;
+	private Species spices;
 	private String features;
 	public long getId() {
 		return id;
@@ -34,10 +34,10 @@ public class Pet extends Person {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
-	public Spices getSpices() {
+	public Species getSpices() {
 		return spices;
 	}
-	public void setSpices(Spices spices) {
+	public void setSpices(Species spices) {
 		this.spices = spices;
 	}
 	public String getFeatures() {
