@@ -1,10 +1,15 @@
-# Construccion2-JCenteno-FChirivi-AOrtiz
+# 🏥 Construcción de Software II – Proyecto Veterinaria  
+**Repositorio:** Construccion2-JCenteno-FChirivi-AOrtiz  
 
-## Participantes:
+---
 
-## - Jesus Adrian Centeno Montiel
-## - Fabian Alexander Chirivi Pinzon
-## - Alejandro Ortiz Acevedo
+## Participantes  
+| Nombre                              | Rol            |
+| --------------------------------    | -------------- |
+| **Jesús Adrián Centeno Montiel**    | Desarrollador  |
+| **Fabián Alexander Chiriví Pinzón** | Desarrollador  |
+| **Alejandro Ortiz Acevedo**         | Desarrollador  |
 
-## Tecnologia
-Java Springboot
+## Tecnología utilizada  
+- **Lenguaje:** Java ☕  
+- **Framework:** Spring Boot 🌱  
