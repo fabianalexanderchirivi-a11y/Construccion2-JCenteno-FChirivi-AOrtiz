@@ -8,11 +8,11 @@ public class UserService {
 	private UserPort userPort;
 	
 	public void createUser(User user) throws Exception {
-		if(userPort.findByDocument(user)!=null) {
+		if(userPort.findByDocument(user.getDocument())!=null) {
 			throw new Exception("Ya existe un usuario registrado con esta cedula");
 		}
 		
-		if(userPort.findByUserName(user)!=null) {
+		if(userPort.findByUserName(user.getUsername())!=null) {
 			throw new Exception("Ya existe un usuario con este nombre de usuario");
 		}
 		
