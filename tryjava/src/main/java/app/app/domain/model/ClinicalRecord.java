@@ -6,7 +6,7 @@ public class ClinicalRecord {
 
 	private long id;
 	private Pet pet;
-	private User veterninarian;
+	private User veterinarian;
 	private Date date;
 	private String motive;
 	private String diagnosis;
@@ -33,11 +33,11 @@ public class ClinicalRecord {
 	public void setPet(Pet pet) {
 		this.pet = pet;
 	}
-	public User getVeterninarian() {
-		return veterninarian;
+	public User getVeterinarian() {
+		return veterinarian;
 	}
-	public void setVeterninarian(User veterninarian) {
-		this.veterninarian = veterninarian;
+	public void setVeterinarian(User veterinarian) {
+		this.veterinarian = veterinarian;
 	}
 	public Date getDate() {
 		return date;

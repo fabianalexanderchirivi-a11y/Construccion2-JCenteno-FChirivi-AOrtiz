@@ -16,7 +16,7 @@ public class CreateClinicalOrder {
 			throw new Exception("Debe agregar una mascota existente");
 		}
 		
-		if(order.getVeterninarian() == null) {
+		if(order.getVeterinarian() == null) {
 			throw new Exception("Debe tener un veterinario asignado");
 		}
 		

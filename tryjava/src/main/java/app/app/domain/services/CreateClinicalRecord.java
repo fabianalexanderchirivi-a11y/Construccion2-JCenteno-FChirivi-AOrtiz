@@ -21,7 +21,7 @@ public class CreateClinicalRecord {
             throw new Exception("Debe asociarse una mascota al registro clínico");
         }
 
-        if (clinicalRecord.getVeterninarian() == null) {
+        if (clinicalRecord.getVeterinarian() == null) {
             throw new Exception("Debe asignarse un veterinario al registro clínico");
         }
 
