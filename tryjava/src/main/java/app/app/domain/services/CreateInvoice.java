@@ -12,7 +12,7 @@ public class CreateInvoice {
         this.invoicePort = invoicePort;
     }
 	
-	public Invoice excecute(Invoice invoice) throws Exception{
+	public Invoice execute(Invoice invoice) throws Exception{
 		
 		if (invoice.getOrder() == null) {
             throw new Exception("La factura debe estar asociada a una orden clínica");
