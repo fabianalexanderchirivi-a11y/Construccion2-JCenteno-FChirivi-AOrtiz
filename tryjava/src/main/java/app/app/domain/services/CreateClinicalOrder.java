@@ -10,7 +10,7 @@ public class CreateClinicalOrder {
 	    this.clinicalOrderPort = orderPort;
 	}
 	
-	public void excecute(ClinicalOrder order) throws Exception{
+	public void execute(ClinicalOrder order) throws Exception{
 		
 		if(order.getPet() == null) {
 			throw new Exception("Debe agregar una mascota existente");
