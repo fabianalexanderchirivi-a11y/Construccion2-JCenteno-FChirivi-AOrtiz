@@ -9,3 +9,4 @@
 
 ## Tecnologia
 Java Springboot
+UTF-8
