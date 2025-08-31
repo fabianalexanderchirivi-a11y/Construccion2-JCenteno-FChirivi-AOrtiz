@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Construccion2-JCenteno-FChirivi-AOrtiz
 
 ## Participantes:
@@ -8,3 +9,10 @@
 
 ## Tecnologia
 Java Springboot
+=======
+# TrialRepositoryAXTRP
+im just learning how to use GitHub and practice Java proyects, nothing special
+
+## Members 
+AXTRP (me lol)
+>>>>>>> mine/develop
