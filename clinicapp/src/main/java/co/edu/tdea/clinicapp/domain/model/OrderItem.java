@@ -1,26 +1,23 @@
 package co.edu.tdea.clinicapp.domain.model;
 
 public abstract class OrderItem {
+    private int itemNumber;         
+    private final String catalogId; 
+    private final int quantity;     
 
-    private String orderNumber;
-    private int itemNumber;
-
-    public String getOrderNumber() {
-        return orderNumber;
+    protected OrderItem(String catalogId, int quantity) {
+        if (catalogId == null || catalogId.isBlank()) throw new IllegalArgumentException("catalogId is required");
+        if (quantity < 1) throw new IllegalArgumentException("quantity must be >= 1");
+        this.catalogId = catalogId;
+        this.quantity = quantity;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public int getItemNumber() {
-        return itemNumber;
-    }
-
+    public int getItemNumber() { return itemNumber; }
     public void setItemNumber(int itemNumber) {
-        if (itemNumber < 1) {
-            throw new IllegalArgumentException("El número de ítem debe ser mayor o igual a 1");
-        }
+        if (itemNumber < 1) throw new IllegalArgumentException("itemNumber must be >= 1");
         this.itemNumber = itemNumber;
     }
+
+    public String getCatalogId() { return catalogId; }
+    public int getQuantity() { return quantity; }
 }
