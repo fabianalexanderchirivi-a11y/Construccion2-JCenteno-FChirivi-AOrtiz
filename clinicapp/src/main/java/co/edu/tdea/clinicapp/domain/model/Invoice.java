@@ -1,97 +1,72 @@
 package co.edu.tdea.clinicapp.domain.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 public class Invoice {
+    private final LocalDateTime createdAt;
+    private final String patientIdNumber;
+    private final String patientFullName;
+    private final int patientAge;
+    private final String doctorFullName;
+    private final String insuranceCompany;
+    private final String policyNumber;
+    private final boolean policyActive;
+    private final LocalDate policyEndDate;
+    private final Integer policyDaysRemaining;
+    private final List<InvoiceItem> items;
+    private final int grossTotal;
+    private final int copay;
+    private final int insurerPortion;
+    private final int patientPayable;
 
-    private String patientFullName;
-    private int patientAge;
-    private String patientIdNumber;
-    private String treatingDoctorName;
-    private String insuranceCompanyName;
-    private String policyNumber;
-    private LocalDate policyValidUntil;
-    private long policyDaysRemaining;
-    private long copayAmount;
-    private long totalAmount;
-
-    public String getPatientFullName() {
-        return patientFullName;
-    }
-
-    public void setPatientFullName(String patientFullName) {
-        this.patientFullName = patientFullName;
-    }
-
-    public int getPatientAge() {
-        return patientAge;
-    }
-
-    public void setPatientAge(int patientAge) {
-        this.patientAge = patientAge;
-    }
-
-    public String getPatientIdNumber() {
-        return patientIdNumber;
-    }
-
-    public void setPatientIdNumber(String patientIdNumber) {
+    public Invoice(LocalDateTime createdAt,
+                   String patientIdNumber,
+                   String patientFullName,
+                   int patientAge,
+                   String doctorFullName,
+                   String insuranceCompany,
+                   String policyNumber,
+                   boolean policyActive,
+                   LocalDate policyEndDate,
+                   Integer policyDaysRemaining,
+                   List<InvoiceItem> items,
+                   int grossTotal,
+                   int copay,
+                   int insurerPortion,
+                   int patientPayable) {
+        this.createdAt = createdAt;
         this.patientIdNumber = patientIdNumber;
-    }
-
-    public String getTreatingDoctorName() {
-        return treatingDoctorName;
-    }
-
-    public void setTreatingDoctorName(String treatingDoctorName) {
-        this.treatingDoctorName = treatingDoctorName;
-    }
-
-    public String getInsuranceCompanyName() {
-        return insuranceCompanyName;
-    }
-
-    public void setInsuranceCompanyName(String insuranceCompanyName) {
-        this.insuranceCompanyName = insuranceCompanyName;
-    }
-
-    public String getPolicyNumber() {
-        return policyNumber;
-    }
-
-    public void setPolicyNumber(String policyNumber) {
+        this.patientFullName = patientFullName;
+        this.patientAge = patientAge;
+        this.doctorFullName = doctorFullName;
+        this.insuranceCompany = insuranceCompany;
         this.policyNumber = policyNumber;
-    }
-
-    public LocalDate getPolicyValidUntil() {
-        return policyValidUntil;
-    }
-
-    public void setPolicyValidUntil(LocalDate policyValidUntil) {
-        this.policyValidUntil = policyValidUntil;
-    }
-
-    public long getPolicyDaysRemaining() {
-        return policyDaysRemaining;
-    }
-
-    public void setPolicyDaysRemaining(long policyDaysRemaining) {
+        this.policyActive = policyActive;
+        this.policyEndDate = policyEndDate;
         this.policyDaysRemaining = policyDaysRemaining;
+        this.items = items;
+        this.grossTotal = grossTotal;
+        this.copay = copay;
+        this.insurerPortion = insurerPortion;
+        this.patientPayable = patientPayable;
     }
 
-    public long getCopayAmount() {
-        return copayAmount;
-    }
-
-    public void setCopayAmount(long copayAmount) {
-        this.copayAmount = copayAmount;
-    }
-
-    public long getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(long totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getPatientIdNumber() { return patientIdNumber; }
+    public String getPatientFullName() { return patientFullName; }
+    public int getPatientAge() { return patientAge; }
+    public String getDoctorFullName() { return doctorFullName; }
+    public String getInsuranceCompany() { return insuranceCompany; }
+    public String getPolicyNumber() { return policyNumber; }
+    public boolean isPolicyActive() { return policyActive; }
+    public LocalDate getPolicyEndDate() { return policyEndDate; }
+    public Integer getPolicyDaysRemaining() { return policyDaysRemaining; }
+    public List<InvoiceItem> getItems() { return Collections.unmodifiableList(items); }
+    public int getGrossTotal() { return grossTotal; }
+    public int getCopay() { return copay; }
+    public int getInsurerPortion() { return insurerPortion; }
+    public int getPatientPayable() { return patientPayable; }
 }
