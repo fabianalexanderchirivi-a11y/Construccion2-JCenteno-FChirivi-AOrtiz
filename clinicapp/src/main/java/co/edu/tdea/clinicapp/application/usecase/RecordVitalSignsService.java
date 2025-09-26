@@ -7,6 +7,11 @@ import co.edu.tdea.clinicapp.domain.model.VitalSignsRecord;
 import co.edu.tdea.clinicapp.domain.repository.PatientRepository;
 import co.edu.tdea.clinicapp.domain.repository.UserRepository;
 import co.edu.tdea.clinicapp.domain.repository.VitalSignsRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class RecordVitalSignsService implements RecordVitalSignsUseCase {
 

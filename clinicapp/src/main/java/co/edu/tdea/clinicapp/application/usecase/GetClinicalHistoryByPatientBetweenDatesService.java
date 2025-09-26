@@ -9,6 +9,11 @@ import co.edu.tdea.clinicapp.application.port.in.GetClinicalHistoryByPatientBetw
 import co.edu.tdea.clinicapp.domain.model.ClinicalHistoryEntry;
 import co.edu.tdea.clinicapp.domain.repository.ClinicalHistoryRepository;
 import co.edu.tdea.clinicapp.domain.repository.PatientRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class GetClinicalHistoryByPatientBetweenDatesService
         implements GetClinicalHistoryByPatientBetweenDatesUseCase {

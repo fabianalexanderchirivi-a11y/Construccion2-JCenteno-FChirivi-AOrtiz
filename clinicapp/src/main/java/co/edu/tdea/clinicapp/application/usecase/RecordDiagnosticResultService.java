@@ -7,6 +7,11 @@ import co.edu.tdea.clinicapp.domain.repository.ClinicalHistoryRepository;
 import co.edu.tdea.clinicapp.domain.repository.PatientRepository;
 import co.edu.tdea.clinicapp.domain.repository.UserRepository;
 import co.edu.tdea.clinicapp.domain.model.Role;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class RecordDiagnosticResultService implements RecordDiagnosticResultUseCase {
 

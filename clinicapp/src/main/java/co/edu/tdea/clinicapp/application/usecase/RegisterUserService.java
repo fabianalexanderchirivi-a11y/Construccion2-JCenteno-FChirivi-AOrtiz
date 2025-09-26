@@ -4,6 +4,11 @@ import co.edu.tdea.clinicapp.application.port.in.RegisterUserCommand;
 import co.edu.tdea.clinicapp.application.port.in.RegisterUserUseCase;
 import co.edu.tdea.clinicapp.domain.model.User;
 import co.edu.tdea.clinicapp.domain.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class RegisterUserService implements RegisterUserUseCase {
 

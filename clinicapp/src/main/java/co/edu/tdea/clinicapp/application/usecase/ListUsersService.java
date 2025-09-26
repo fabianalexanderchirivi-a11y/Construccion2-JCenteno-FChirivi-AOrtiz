@@ -5,6 +5,11 @@ import java.util.List;
 import co.edu.tdea.clinicapp.application.port.in.ListUsersUseCase;
 import co.edu.tdea.clinicapp.domain.model.User;
 import co.edu.tdea.clinicapp.domain.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class ListUsersService implements ListUsersUseCase {
 

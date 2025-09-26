@@ -4,6 +4,11 @@ import co.edu.tdea.clinicapp.application.port.in.UpsertDiagnosticAidCommand;
 import co.edu.tdea.clinicapp.application.port.in.UpsertDiagnosticAidUseCase;
 import co.edu.tdea.clinicapp.domain.model.DiagnosticAid;
 import co.edu.tdea.clinicapp.domain.repository.DiagnosticAidRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
 
 public class UpsertDiagnosticAidService implements UpsertDiagnosticAidUseCase {
 
