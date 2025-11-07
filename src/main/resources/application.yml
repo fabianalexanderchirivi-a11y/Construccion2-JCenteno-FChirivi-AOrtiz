@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: clinicapp-api
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/clinicapp
+    username: clinic
+    password: clinic123
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        # Esta línea puedes eliminarla; Hibernate ya detecta MariaDB
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+server:
+  port: 8080
+
+jwt:
+  secret: "12345678901234567890123456789012_ABCDEF"
+  issuer: "tdea-clinicapp-auth"
+  ttlSeconds: 3600
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
