@@ -16,9 +16,13 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.context.annotation.Profile;
+
+@Profile("oauth2")
 @Configuration
 @EnableMethodSecurity
 @EnableConfigurationProperties(JwtProperties.class)
+
 public class SecurityConfig {
 
   @Bean

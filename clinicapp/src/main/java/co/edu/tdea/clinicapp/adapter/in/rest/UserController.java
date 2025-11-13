@@ -1,6 +1,10 @@
 package co.edu.tdea.clinicapp.adapter.in.rest;
 
-import co.edu.tdea.clinicapp.application.port.in.*;
+import co.edu.tdea.clinicapp.application.port.in.DeleteUserUseCase;
+import co.edu.tdea.clinicapp.application.port.in.GetUserUseCase;
+import co.edu.tdea.clinicapp.application.port.in.ListUsersUseCase;
+import co.edu.tdea.clinicapp.application.port.in.RegisterUserCommand;
+import co.edu.tdea.clinicapp.application.port.in.RegisterUserUseCase;
 import co.edu.tdea.clinicapp.domain.model.Role;
 import co.edu.tdea.clinicapp.domain.model.User;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +33,22 @@ public class UserController {
         this.deleteUserUseCase = deleteUserUseCase;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @PostMapping
     public ResponseEntity<User> register(@RequestBody CreateUserRequest req) {
         User u = registerUserUseCase.register(new RegisterUserCommand(
-                req.idNumber(), req.fullName(), req.email(), req.phoneNumber(),
-                req.birthDate(), req.address(), req.role()
+                req.idNumber(),
+                req.fullName(),
+                req.email(),
+                req.phoneNumber(),
+                req.birthDate(),
+                req.address(),
+                req.role()
         ));
         return ResponseEntity.ok(u);
     }
 
-    @PreAuthorize("@subjectSecurity.sameUser(#idNumber, authentication) or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @GetMapping("/{idNumber}")
     public ResponseEntity<User> get(@PathVariable String idNumber) {
         return getUserUseCase.byIdNumber(idNumber)
@@ -47,13 +56,13 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @GetMapping
     public List<User> list() {
         return listUsersUseCase.list();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @DeleteMapping("/{idNumber}")
     public ResponseEntity<Void> delete(@PathVariable String idNumber) {
         deleteUserUseCase.deleteByIdNumber(idNumber);
