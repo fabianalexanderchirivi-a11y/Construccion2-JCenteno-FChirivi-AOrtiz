@@ -13,9 +13,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClinicConsoleMenu {
-
-    // ==== Proveedores opcionales (no bloquean el arranque si faltan beans) ====
-    // Usuarios/Pacientes/Citas
     private final ObjectProvider<RegisterUserUseCase> registerUserUseCase;
     private final ObjectProvider<GetUserUseCase> getUserUseCase;
     private final ObjectProvider<ListUsersUseCase> listUsersUseCase;
@@ -35,7 +32,6 @@ public class ClinicConsoleMenu {
     private final ObjectProvider<ListAppointmentsByPatientUseCase> listAppointmentsByPatientUseCase;
     private final ObjectProvider<ListAppointmentsByDoctorUseCase> listAppointmentsByDoctorUseCase;
 
-    // Inventarios
     private final ObjectProvider<UpsertMedicationUseCase> upsertMedicationUseCase;
     private final ObjectProvider<ListMedicationsUseCase> listMedicationsUseCase;
     private final ObjectProvider<DeleteMedicationUseCase> deleteMedicationUseCase;
@@ -47,8 +43,7 @@ public class ClinicConsoleMenu {
     private final ObjectProvider<UpsertDiagnosticAidUseCase> upsertDiagnosticAidUseCase;
     private final ObjectProvider<ListDiagnosticAidsUseCase> listDiagnosticAidsUseCase;
     private final ObjectProvider<DeleteDiagnosticAidUseCase> deleteDiagnosticAidUseCase;
-
-    // Órdenes
+    
     private final ObjectProvider<PrescribeMedicationUseCase> prescribeMedicationUseCase;
     private final ObjectProvider<PrescribeProcedureUseCase> prescribeProcedureUseCase;
     private final ObjectProvider<RequestDiagnosticAidUseCase> requestDiagnosticAidUseCase;
