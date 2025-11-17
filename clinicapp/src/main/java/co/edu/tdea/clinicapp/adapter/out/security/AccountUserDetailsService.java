@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("accountUserDetailsService")
+@Service
 public class AccountUserDetailsService implements UserDetailsService {
 
     private final SpringDataAccountRepository repository;

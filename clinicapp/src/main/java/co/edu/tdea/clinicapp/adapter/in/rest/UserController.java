@@ -11,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@PreAuthorize("hasRole('HUMAN_RESOURCES')")
 public class UserController {
 
     private final RegisterUserUseCase registerUserUseCase;
@@ -33,10 +35,9 @@ public class UserController {
         this.deleteUserUseCase = deleteUserUseCase;
     }
 
-    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @PostMapping
     public ResponseEntity<User> register(@RequestBody CreateUserRequest req) {
-        User u = registerUserUseCase.register(new RegisterUserCommand(
+        User user = registerUserUseCase.register(new RegisterUserCommand(
                 req.idNumber(),
                 req.fullName(),
                 req.email(),
@@ -45,10 +46,10 @@ public class UserController {
                 req.address(),
                 req.role()
         ));
-        return ResponseEntity.ok(u);
+        URI location = URI.create("/api/users/" + user.getIdNumber());
+        return ResponseEntity.created(location).body(user);
     }
 
-    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @GetMapping("/{idNumber}")
     public ResponseEntity<User> get(@PathVariable String idNumber) {
         return getUserUseCase.byIdNumber(idNumber)
@@ -56,13 +57,12 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @GetMapping
-    public List<User> list() {
-        return listUsersUseCase.list();
+    public ResponseEntity<List<User>> list() {
+        List<User> users = listUsersUseCase.list();
+        return ResponseEntity.ok(users);
     }
 
-    @PreAuthorize("hasRole('HUMAN_RESOURCES')")
     @DeleteMapping("/{idNumber}")
     public ResponseEntity<Void> delete(@PathVariable String idNumber) {
         deleteUserUseCase.deleteByIdNumber(idNumber);

@@ -6,7 +6,9 @@ import co.edu.tdea.clinicapp.application.port.in.RegisterPatientCommand;
 import co.edu.tdea.clinicapp.application.port.in.RegisterPatientUseCase;
 import co.edu.tdea.clinicapp.application.port.in.UpdatePatientCommand;
 import co.edu.tdea.clinicapp.application.port.in.UpdatePatientUseCase;
+import co.edu.tdea.clinicapp.domain.model.EmergencyContact;
 import co.edu.tdea.clinicapp.domain.model.Gender;
+import co.edu.tdea.clinicapp.domain.model.InsurancePolicy;
 import co.edu.tdea.clinicapp.domain.model.Patient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
 
     private final RegisterPatientUseCase registerPatientUseCase;
@@ -34,103 +36,161 @@ public class PatientController {
         this.listPatientsUseCase = listPatientsUseCase;
     }
 
-
-    @PreAuthorize("hasRole('ADMINISTRATIVE')")
+    // CREAR paciente → solo ADMIN_STAFF
+    @PreAuthorize("hasRole('ADMIN_STAFF')")
     @PostMapping
-    public ResponseEntity<Patient> register(@RequestBody CreatePatientRequest req) {
-        Patient p = registerPatientUseCase.register(new RegisterPatientCommand(
-                req.idNumber,
-                req.fullName,
-                req.birthDate,
-                req.gender,
-                req.address,
-                req.phoneNumber,
-                req.email,
-                req.ecFirstName,
-                req.ecLastName,
-                req.ecRelationship,
-                req.ecPhoneNumber,
-                req.insuranceCompanyName,
-                req.insurancePolicyNumber,
-                req.insuranceActive,
-                req.insuranceEndDate
-        ));
-        return ResponseEntity.ok(p);
+    public ResponseEntity<PatientResponse> register(@RequestBody PatientRequest request) {
+        RegisterPatientCommand command = mapToRegisterCommand(request);
+        Patient patient = registerPatientUseCase.register(command);
+        return ResponseEntity.ok(mapToResponse(patient));
     }
 
-
-    @PreAuthorize("hasRole('ADMINISTRATIVE')")
+    // ACTUALIZAR paciente → solo ADMIN_STAFF
+    @PreAuthorize("hasRole('ADMIN_STAFF')")
     @PutMapping("/{idNumber}")
-    public ResponseEntity<Patient> update(@PathVariable String idNumber, @RequestBody UpdatePatientRequest req) {
-        Patient p = updatePatientUseCase.update(new UpdatePatientCommand(
-                idNumber,
-                req.fullName,
-                req.birthDate,
-                req.gender,
-                req.address,
-                req.phoneNumber,
-                req.email,
-                req.ecFirstName,
-                req.ecLastName,
-                req.ecRelationship,
-                req.ecPhoneNumber,
-                req.insuranceCompanyName,
-                req.insurancePolicyNumber,
-                req.insuranceActive,
-                req.insuranceEndDate
-        ));
-        return ResponseEntity.ok(p);
+    public ResponseEntity<PatientResponse> update(@PathVariable String idNumber,
+                                                  @RequestBody PatientRequest request) {
+        UpdatePatientCommand command = mapToUpdateCommand(idNumber, request);
+        Patient patient = updatePatientUseCase.update(command);
+        return ResponseEntity.ok(mapToResponse(patient));
     }
 
-
-    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','DOCTOR','NURSING')")
+    // CONSULTAR un paciente → ADMIN_STAFF, DOCTOR, NURSE
+    @PreAuthorize("hasAnyRole('ADMIN_STAFF','DOCTOR','NURSE')")
     @GetMapping("/{idNumber}")
-    public ResponseEntity<Patient> get(@PathVariable String patientId) {
-        return getPatientUseCase.byIdNumber(patientId)
-                .map(ResponseEntity::ok)
+    public ResponseEntity<PatientResponse> getById(@PathVariable String idNumber) {
+        return getPatientUseCase.byIdNumber(idNumber)
+                .map(p -> ResponseEntity.ok(mapToResponse(p)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
-    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','DOCTOR','NURSING')")
+    // LISTAR pacientes → ADMIN_STAFF, DOCTOR, NURSE
+    @PreAuthorize("hasAnyRole('ADMIN_STAFF','DOCTOR','NURSE')")
     @GetMapping
-    public List<Patient> list() {
-        return listPatientsUseCase.list();
+    public List<PatientResponse> list() {
+        return listPatientsUseCase.list()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
+    private RegisterPatientCommand mapToRegisterCommand(PatientRequest r) {
+        EmergencyContactDto ec = r.emergencyContact();
+        InsurancePolicyDto ip = r.insurancePolicy();
 
-    public static class CreatePatientRequest {
-        public String idNumber;
-        public String fullName;
-        public LocalDate birthDate;
-        public Gender gender;
-        public String address;
-        public String phoneNumber;
-        public String email;
-        public String ecFirstName;
-        public String ecLastName;
-        public String ecRelationship;
-        public String ecPhoneNumber;
-        public String insuranceCompanyName;
-        public String insurancePolicyNumber;
-        public boolean insuranceActive;
-        public LocalDate insuranceEndDate;
+        return new RegisterPatientCommand(
+                r.idNumber(),
+                r.fullName(),
+                r.birthDate(),
+                r.gender(),
+                r.address(),
+                r.phoneNumber(),
+                r.email(),
+                ec != null ? ec.firstName() : null,
+                ec != null ? ec.lastName() : null,
+                ec != null ? ec.relationship() : null,
+                ec != null ? ec.phoneNumber() : null,
+                ip != null ? ip.companyName() : null,
+                ip != null ? ip.policyNumber() : null,
+                ip != null && ip.active(),
+                ip != null ? ip.endDate() : null
+        );
     }
 
-    public static class UpdatePatientRequest {
-        public String fullName;
-        public LocalDate birthDate;
-        public Gender gender;
-        public String address;
-        public String phoneNumber;
-        public String email;
-        public String ecFirstName;
-        public String ecLastName;
-        public String ecRelationship;
-        public String ecPhoneNumber;
-        public String insuranceCompanyName;
-        public String insurancePolicyNumber;
-        public Boolean insuranceActive;
-        public LocalDate insuranceEndDate;
+    private UpdatePatientCommand mapToUpdateCommand(String idNumber, PatientRequest r) {
+        EmergencyContactDto ec = r.emergencyContact();
+        InsurancePolicyDto ip = r.insurancePolicy();
+
+        return new UpdatePatientCommand(
+                idNumber,
+                r.fullName(),
+                r.birthDate(),
+                r.gender(),
+                r.address(),
+                r.phoneNumber(),
+                r.email(),
+                ec != null ? ec.firstName() : null,
+                ec != null ? ec.lastName() : null,
+                ec != null ? ec.relationship() : null,
+                ec != null ? ec.phoneNumber() : null,
+                ip != null ? ip.companyName() : null,
+                ip != null ? ip.policyNumber() : null,
+                ip != null ? ip.active() : null,
+                ip != null ? ip.endDate() : null
+        );
     }
+
+    private PatientResponse mapToResponse(Patient patient) {
+        EmergencyContact ec = patient.getEmergencyContact();
+        EmergencyContactDto ecDto = null;
+        if (ec != null) {
+            ecDto = new EmergencyContactDto(
+                    ec.getFirstName(),
+                    ec.getLastName(),
+                    ec.getRelationship(),
+                    ec.getPhoneNumber()
+            );
+        }
+
+        InsurancePolicy ip = patient.getInsurancePolicy();
+        InsurancePolicyDto ipDto = null;
+        if (ip != null) {
+            ipDto = new InsurancePolicyDto(
+                    ip.getCompanyName(),
+                    ip.getPolicyNumber(),
+                    ip.isActive(),
+                    ip.getEndDate()
+            );
+        }
+
+        return new PatientResponse(
+                patient.getIdNumber(),
+                patient.getFullName(),
+                patient.getBirthDate(),
+                patient.getGender(),
+                patient.getAddress(),
+                patient.getPhoneNumber(),
+                patient.getEmail(),
+                ecDto,
+                ipDto
+        );
+    }
+
+    public record PatientRequest(
+            String idNumber,
+            String fullName,
+            LocalDate birthDate,
+            Gender gender,
+            String address,
+            String phoneNumber,
+            String email,
+            EmergencyContactDto emergencyContact,
+            InsurancePolicyDto insurancePolicy
+    ) { }
+
+    public record EmergencyContactDto(
+            String firstName,
+            String lastName,
+            String relationship,
+            String phoneNumber
+    ) { }
+
+    public record InsurancePolicyDto(
+            String companyName,
+            String policyNumber,
+            boolean active,
+            LocalDate endDate
+    ) { }
+
+    public record PatientResponse(
+            String idNumber,
+            String fullName,
+            LocalDate birthDate,
+            Gender gender,
+            String address,
+            String phoneNumber,
+            String email,
+            EmergencyContactDto emergencyContact,
+            InsurancePolicyDto insurancePolicy
+    ) { }
 }

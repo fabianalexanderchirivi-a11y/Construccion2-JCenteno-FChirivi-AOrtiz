@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import co.edu.tdea.clinicapp.domain.model.Gender;
 
 public class RegisterPatientCommand {
+
     private final String idNumber;
     private final String fullName;
     private final LocalDate birthDate;
@@ -13,23 +14,31 @@ public class RegisterPatientCommand {
     private final String phoneNumber;
     private final String email;
 
-    // Emergency contact
     private final String ecFirstName;
     private final String ecLastName;
     private final String ecRelationship;
     private final String ecPhoneNumber;
 
-    // Insurance
     private final String insuranceCompanyName;
     private final String insurancePolicyNumber;
     private final boolean insuranceActive;
     private final LocalDate insuranceEndDate;
 
-    public RegisterPatientCommand(String idNumber, String fullName, LocalDate birthDate, Gender gender,
-                                  String address, String phoneNumber, String email,
-                                  String ecFirstName, String ecLastName, String ecRelationship, String ecPhoneNumber,
-                                  String insuranceCompanyName, String insurancePolicyNumber,
-                                  boolean insuranceActive, LocalDate insuranceEndDate) {
+    public RegisterPatientCommand(String idNumber,
+                                  String fullName,
+                                  LocalDate birthDate,
+                                  Gender gender,
+                                  String address,
+                                  String phoneNumber,
+                                  String email,
+                                  String ecFirstName,
+                                  String ecLastName,
+                                  String ecRelationship,
+                                  String ecPhoneNumber,
+                                  String insuranceCompanyName,
+                                  String insurancePolicyNumber,
+                                  boolean insuranceActive,
+                                  LocalDate insuranceEndDate) {
         this.idNumber = idNumber;
         this.fullName = fullName;
         this.birthDate = birthDate;
@@ -54,10 +63,12 @@ public class RegisterPatientCommand {
     public String getAddress() { return address; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getEmail() { return email; }
+
     public String getEcFirstName() { return ecFirstName; }
     public String getEcLastName() { return ecLastName; }
     public String getEcRelationship() { return ecRelationship; }
     public String getEcPhoneNumber() { return ecPhoneNumber; }
+
     public String getInsuranceCompanyName() { return insuranceCompanyName; }
     public String getInsurancePolicyNumber() { return insurancePolicyNumber; }
     public boolean isInsuranceActive() { return insuranceActive; }

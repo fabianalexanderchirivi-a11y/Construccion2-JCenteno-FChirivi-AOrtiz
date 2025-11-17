@@ -30,7 +30,7 @@ public class PatientEntity {
     @Column(length = 120)
     private String address;
 
-    @Column(length = 1)
+    @Column(length = 10)
     private String gender;
 
     public Integer getId() { return id; }
