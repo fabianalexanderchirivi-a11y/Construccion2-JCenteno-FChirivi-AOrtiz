@@ -2,11 +2,13 @@ package co.edu.tdea.clinicapp.adapter.out.persistence.jpa.clinicalhistory;
 
 import co.edu.tdea.clinicapp.domain.model.ClinicalHistoryEntry;
 import co.edu.tdea.clinicapp.domain.repository.ClinicalHistoryRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Primary
+@Component("clinicalHistoryJpaAdapterV2")
 public class ClinicalHistoryJpaAdapter implements ClinicalHistoryRepository {
 
     private final SpringDataClinicalHistoryRepository repository;
