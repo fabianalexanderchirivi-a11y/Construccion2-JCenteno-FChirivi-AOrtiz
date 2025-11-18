@@ -36,8 +36,8 @@ public class PatientController {
         this.listPatientsUseCase = listPatientsUseCase;
     }
 
-    // CREAR paciente → solo ADMIN_STAFF
-    @PreAuthorize("hasRole('ADMIN_STAFF')")
+    // CREAR paciente → solo ADMINISTRATIVE
+    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','ADMIN_STAFF')")
     @PostMapping
     public ResponseEntity<PatientResponse> register(@RequestBody PatientRequest request) {
         RegisterPatientCommand command = mapToRegisterCommand(request);
@@ -45,8 +45,8 @@ public class PatientController {
         return ResponseEntity.ok(mapToResponse(patient));
     }
 
-    // ACTUALIZAR paciente → solo ADMIN_STAFF
-    @PreAuthorize("hasRole('ADMIN_STAFF')")
+    // ACTUALIZAR paciente → solo ADMINISTRATIVE
+    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','ADMIN_STAFF')")
     @PutMapping("/{idNumber}")
     public ResponseEntity<PatientResponse> update(@PathVariable String idNumber,
                                                   @RequestBody PatientRequest request) {
@@ -55,8 +55,8 @@ public class PatientController {
         return ResponseEntity.ok(mapToResponse(patient));
     }
 
-    // CONSULTAR un paciente → ADMIN_STAFF, DOCTOR, NURSE
-    @PreAuthorize("hasAnyRole('ADMIN_STAFF','DOCTOR','NURSE')")
+    // CONSULTAR un paciente → solo ADMINISTRATIVE
+    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','ADMIN_STAFF')")
     @GetMapping("/{idNumber}")
     public ResponseEntity<PatientResponse> getById(@PathVariable String idNumber) {
         return getPatientUseCase.byIdNumber(idNumber)
@@ -64,8 +64,8 @@ public class PatientController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // LISTAR pacientes → ADMIN_STAFF, DOCTOR, NURSE
-    @PreAuthorize("hasAnyRole('ADMIN_STAFF','DOCTOR','NURSE')")
+    // LISTAR pacientes → solo ADMINISTRATIVE
+    @PreAuthorize("hasAnyRole('ADMINISTRATIVE','ADMIN_STAFF')")
     @GetMapping
     public List<PatientResponse> list() {
         return listPatientsUseCase.list()
