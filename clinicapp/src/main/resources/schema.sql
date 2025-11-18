@@ -1,14 +1,3 @@
--- Base de datos para clinicapp
-CREATE DATABASE IF NOT EXISTS clinicapp
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_general_ci;
-
-USE clinicapp;
-
-CREATE USER IF NOT EXISTS 'clinic'@'localhost' IDENTIFIED BY 'clinic123';
-GRANT ALL PRIVILEGES ON clinicapp.* TO 'clinic'@'localhost';
-FLUSH PRIVILEGES;
-
 -- Seguridad / cuentas
 CREATE TABLE IF NOT EXISTS accounts (
   id               INT AUTO_INCREMENT PRIMARY KEY,
