@@ -37,7 +37,8 @@ import co.edu.tdea.clinicapp.config.JwtProperties;
         "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.clinicalhistory",
         "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.nursing",
         "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.order",
-        "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.patient"
+        "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.patient",
+        "co.edu.tdea.clinicapp.adapter.out.persistence.jpa.user"
 })
 @EnableConfigurationProperties(JwtProperties.class)
 public class ClinicAppApplication {
