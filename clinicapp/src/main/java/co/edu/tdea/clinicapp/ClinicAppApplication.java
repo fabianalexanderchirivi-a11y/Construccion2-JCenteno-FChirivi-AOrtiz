@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import co.edu.tdea.clinicapp.config.JwtProperties;
 
 @SpringBootApplication
@@ -23,6 +25,11 @@ import co.edu.tdea.clinicapp.config.JwtProperties;
                         type = FilterType.REGEX,
                         pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.out\\.persistence\\.jpa\\.clinical\\..*")
         })
+@EnableJpaRepositories(
+        basePackages = "co.edu.tdea.clinicapp.adapter.out.persistence.jpa",
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.REGEX,
+                pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.out\\.persistence\\.jpa\\.clinical\\..*"))
 @EnableConfigurationProperties(JwtProperties.class)
 public class ClinicAppApplication {
     public static void main(String[] args) {
