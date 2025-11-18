@@ -35,8 +35,8 @@ public class ClinicalHistoryController {
         ClinicalHistoryEntry entry = recordDiagnosticResultUseCase.record(new RecordDiagnosticResultCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
-                request.diagnosis(),
                 request.attendedAt(),
+                request.diagnosis(),
                 request.diagnosticAidOrderNumber(),
                 request.diagnosticAidItemNumber(),
                 request.diagnosticAidResult(),
