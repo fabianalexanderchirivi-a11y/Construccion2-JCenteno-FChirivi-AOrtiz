@@ -5,6 +5,8 @@ import co.edu.tdea.clinicapp.application.port.in.GetUserUseCase;
 import co.edu.tdea.clinicapp.application.port.in.ListUsersUseCase;
 import co.edu.tdea.clinicapp.application.port.in.RegisterUserCommand;
 import co.edu.tdea.clinicapp.application.port.in.RegisterUserUseCase;
+import co.edu.tdea.clinicapp.application.port.in.UpdateUserCommand;
+import co.edu.tdea.clinicapp.application.port.in.UpdateUserUseCase;
 import co.edu.tdea.clinicapp.domain.model.Role;
 import co.edu.tdea.clinicapp.domain.model.User;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +26,18 @@ public class UserController {
     private final GetUserUseCase getUserUseCase;
     private final ListUsersUseCase listUsersUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
 
     public UserController(RegisterUserUseCase registerUserUseCase,
                           GetUserUseCase getUserUseCase,
                           ListUsersUseCase listUsersUseCase,
-                          DeleteUserUseCase deleteUserUseCase) {
+                          DeleteUserUseCase deleteUserUseCase,
+                          UpdateUserUseCase updateUserUseCase) {
         this.registerUserUseCase = registerUserUseCase;
         this.getUserUseCase = getUserUseCase;
         this.listUsersUseCase = listUsersUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
+        this.updateUserUseCase = updateUserUseCase;
     }
 
     @PostMapping
@@ -63,6 +68,20 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PutMapping("/{idNumber}")
+    public ResponseEntity<User> update(@PathVariable String idNumber, @RequestBody UpdateUserRequest req) {
+        User updated = updateUserUseCase.update(new UpdateUserCommand(
+                idNumber,
+                req.fullName(),
+                req.email(),
+                req.phoneNumber(),
+                req.birthDate(),
+                req.address(),
+                req.role()
+        ));
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{idNumber}")
     public ResponseEntity<Void> delete(@PathVariable String idNumber) {
         deleteUserUseCase.deleteByIdNumber(idNumber);
@@ -71,6 +90,15 @@ public class UserController {
 
     public record CreateUserRequest(
             String idNumber,
+            String fullName,
+            String email,
+            String phoneNumber,
+            LocalDate birthDate,
+            String address,
+            Role role
+    ) { }
+
+    public record UpdateUserRequest(
             String fullName,
             String email,
             String phoneNumber,

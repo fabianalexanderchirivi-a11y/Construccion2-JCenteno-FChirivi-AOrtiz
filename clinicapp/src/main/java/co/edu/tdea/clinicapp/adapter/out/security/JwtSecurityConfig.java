@@ -1,51 +1,61 @@
 package co.edu.tdea.clinicapp.adapter.out.security;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
-@Configuration("jwtSecurityConfig")
+@Configuration
+@EnableWebSecurity
 @EnableMethodSecurity
 public class JwtSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    public JwtSecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
+    public JwtSecurityConfig(JwtAuthFilter jwtAuthFilter,
+                             @Qualifier("jpaUserDetailsService") UserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
     }
 
     @Bean
-    @Order(0)
-    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-        // Aplica SOLO a /auth/** y /api/**
-        http.securityMatcher("/auth/**", "/api/**");
-
-        http.csrf(csrf -> csrf.disable());
-        http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login").permitAll()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/users/**").hasRole("HUMAN_RESOURCES")
+                .requestMatchers("/api/patients/**").hasAnyRole("ADMINISTRATIVE", "ADMIN_STAFF")
+                .requestMatchers("/api/catalog/**").hasRole("SUPPORT")
+                .requestMatchers("/api/orders/**").hasRole("DOCTOR")
+                .requestMatchers("/api/clinical-history/**").hasAnyRole("DOCTOR", "NURSE")
+                .requestMatchers("/api/vital-signs/**", "/api/nursing-records/**", "/api/nursing/**").hasRole("NURSE")
+                .requestMatchers("/api/appointments/**").hasAnyRole("ADMINISTRATIVE", "ADMIN_STAFF")
+                .requestMatchers("/api/billing/**").hasAnyRole("SUPPORT", "ADMINISTRATIVE", "ADMIN_STAFF")
                 .anyRequest().authenticated()
-        );
-        http.authenticationProvider(daoAuthProvider());
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            )
+            .authenticationProvider(daoAuthProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
-    
+
     @Bean
-    public DaoAuthenticationProvider daoAuthProvider() {
+    public AuthenticationProvider daoAuthProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -55,5 +65,10 @@ public class JwtSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
