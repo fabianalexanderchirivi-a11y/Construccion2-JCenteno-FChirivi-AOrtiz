@@ -37,7 +37,7 @@ public class JwtSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**", "/error", "/error/**").permitAll()
                 .requestMatchers("/api/users/**").hasRole("HUMAN_RESOURCES")
                 .requestMatchers("/api/patients/**").hasAnyRole("ADMINISTRATIVE", "ADMIN_STAFF")
                 .requestMatchers("/api/catalog/**").hasRole("SUPPORT")

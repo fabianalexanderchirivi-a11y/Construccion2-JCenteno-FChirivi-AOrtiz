@@ -15,6 +15,11 @@ import co.edu.tdea.clinicapp.application.port.in.RequestDiagnosticAidCommand;
 import co.edu.tdea.clinicapp.application.port.in.RequestDiagnosticAidUseCase;
 import co.edu.tdea.clinicapp.domain.model.Order;
 import co.edu.tdea.clinicapp.domain.model.OrderType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +50,7 @@ public class OrderController {
     }
 
     @PostMapping("/medications")
-    public ResponseEntity<Order> prescribeMedications(@RequestBody MedicationOrderRequest request) {
+    public ResponseEntity<Order> prescribeMedications(@Valid @RequestBody MedicationOrderRequest request) {
         Order order = prescribeMedicationUseCase.prescribe(new PrescribeMedicationCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
@@ -57,7 +62,7 @@ public class OrderController {
     }
 
     @PostMapping("/procedures")
-    public ResponseEntity<Order> prescribeProcedures(@RequestBody ProcedureOrderRequest request) {
+    public ResponseEntity<Order> prescribeProcedures(@Valid @RequestBody ProcedureOrderRequest request) {
         Order order = prescribeProcedureUseCase.prescribe(new PrescribeProcedureCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
@@ -69,7 +74,7 @@ public class OrderController {
     }
 
     @PostMapping("/diagnostic-aids")
-    public ResponseEntity<Order> requestDiagnostics(@RequestBody DiagnosticAidOrderRequest request) {
+    public ResponseEntity<Order> requestDiagnostics(@Valid @RequestBody DiagnosticAidOrderRequest request) {
         Order order = requestDiagnosticAidUseCase.request(new RequestDiagnosticAidCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
@@ -86,7 +91,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createBaseOrder(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<Void> createBaseOrder(@Valid @RequestBody CreateOrderRequest request) {
         createOrderUseCase.create(new CreateOrderCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
@@ -98,19 +103,53 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    public record MedicationOrderRequest(String patientIdNumber, String doctorIdNumber, List<MedicationItemRequest> items) { }
+    public record MedicationOrderRequest(
+            @NotBlank String patientIdNumber,
+            @NotBlank String doctorIdNumber,
+            @NotEmpty List<@Valid MedicationItemRequest> items
+    ) { }
 
-    public record MedicationItemRequest(String medicationId, int quantity, String dose, String frequency, int durationDays) { }
+    public record MedicationItemRequest(
+            @NotBlank String medicationId,
+            @Positive int quantity,
+            @NotBlank String dose,
+            @NotBlank String frequency,
+            @Positive int durationDays
+    ) { }
 
-    public record ProcedureOrderRequest(String patientIdNumber, String doctorIdNumber, List<ProcedureItemRequest> items) { }
+    public record ProcedureOrderRequest(
+            @NotBlank String patientIdNumber,
+            @NotBlank String doctorIdNumber,
+            @NotEmpty List<@Valid ProcedureItemRequest> items
+    ) { }
 
-    public record ProcedureItemRequest(String procedureId, int times, String frequency, String specialist) { }
+    public record ProcedureItemRequest(
+            @NotBlank String procedureId,
+            @Positive int times,
+            @NotBlank String frequency,
+            @NotBlank String specialist
+    ) { }
 
-    public record DiagnosticAidOrderRequest(String patientIdNumber, String doctorIdNumber, List<DiagnosticAidItemRequest> items) { }
+    public record DiagnosticAidOrderRequest(
+            @NotBlank String patientIdNumber,
+            @NotBlank String doctorIdNumber,
+            @NotEmpty List<@Valid DiagnosticAidItemRequest> items
+    ) { }
 
-    public record DiagnosticAidItemRequest(String diagnosticAidId, int quantity) { }
+    public record DiagnosticAidItemRequest(
+            @NotBlank String diagnosticAidId,
+            @Positive int quantity
+    ) { }
 
-    public record CreateOrderRequest(String patientIdNumber, String doctorIdNumber, OrderType type, List<CreateOrderItemRequest> items) { }
+    public record CreateOrderRequest(
+            @NotBlank String patientIdNumber,
+            @NotBlank String doctorIdNumber,
+            @NotNull OrderType type,
+            @NotEmpty List<@Valid CreateOrderItemRequest> items
+    ) { }
 
-    public record CreateOrderItemRequest(String catalogId, int quantity) { }
+    public record CreateOrderItemRequest(
+            @NotBlank String catalogId,
+            @Positive int quantity
+    ) { }
 }
