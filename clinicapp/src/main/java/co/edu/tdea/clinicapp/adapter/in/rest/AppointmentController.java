@@ -51,33 +51,38 @@ public class AppointmentController {
     @PostMapping
     public ResponseEntity<Appointment> schedule(@RequestBody AppointmentRequest request) {
         Appointment appointment = scheduleAppointmentUseCase.schedule(new ScheduleAppointmentCommand(
-                request.appointmentId(),
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
-                request.appointmentDateTime(),
-                request.reason()
+                request.appointmentDateTime()
         ));
         return ResponseEntity.ok(appointment);
     }
 
-    @PutMapping("/{appointmentId}/reschedule")
-    public ResponseEntity<Appointment> reschedule(@PathVariable String appointmentId, @RequestBody RescheduleRequest request) {
+    @PutMapping("/reschedule")
+    public ResponseEntity<Appointment> reschedule(@RequestBody RescheduleRequest request) {
         Appointment appointment = rescheduleAppointmentUseCase.reschedule(new RescheduleAppointmentCommand(
-                appointmentId,
+                request.patientIdNumber(),
+                request.originalDateTime(),
                 request.newDateTime()
         ));
         return ResponseEntity.ok(appointment);
     }
 
-    @PutMapping("/{appointmentId}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable String appointmentId) {
-        cancelAppointmentUseCase.cancel(new CancelAppointmentCommand(appointmentId));
+    @PutMapping("/cancel")
+    public ResponseEntity<Void> cancel(@RequestBody CancelRequest request) {
+        cancelAppointmentUseCase.cancel(new CancelAppointmentCommand(
+                request.patientIdNumber(),
+                request.scheduledAt()
+        ));
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{appointmentId}/complete")
-    public ResponseEntity<Void> complete(@PathVariable String appointmentId) {
-        completeAppointmentUseCase.complete(new CompleteAppointmentCommand(appointmentId));
+    @PutMapping("/complete")
+    public ResponseEntity<Void> complete(@RequestBody CompleteRequest request) {
+        completeAppointmentUseCase.complete(new CompleteAppointmentCommand(
+                request.patientIdNumber(),
+                request.scheduledAt()
+        ));
         return ResponseEntity.noContent().build();
     }
 
@@ -91,18 +96,20 @@ public class AppointmentController {
         return listAppointmentsByDoctorUseCase.list(doctorId);
     }
 
-    @GetMapping("/{appointmentId}")
-    public ResponseEntity<Appointment> get(@PathVariable String appointmentId) {
-        return getAppointmentUseCase.get(appointmentId)
+    @GetMapping
+    public ResponseEntity<Appointment> get(@RequestParam String patientIdNumber, @RequestParam LocalDateTime scheduledAt) {
+        return getAppointmentUseCase.byPatientAndDateTime(patientIdNumber, scheduledAt)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public record AppointmentRequest(String appointmentId,
-                                     String patientIdNumber,
+    public record AppointmentRequest(String patientIdNumber,
                                      String doctorIdNumber,
-                                     LocalDateTime appointmentDateTime,
-                                     String reason) { }
+                                     LocalDateTime appointmentDateTime) { }
 
-    public record RescheduleRequest(LocalDateTime newDateTime) { }
+    public record RescheduleRequest(String patientIdNumber, LocalDateTime originalDateTime, LocalDateTime newDateTime) { }
+
+    public record CancelRequest(String patientIdNumber, LocalDateTime scheduledAt) { }
+
+    public record CompleteRequest(String patientIdNumber, LocalDateTime scheduledAt) { }
 }

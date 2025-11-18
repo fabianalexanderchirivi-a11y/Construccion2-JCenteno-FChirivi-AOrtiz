@@ -34,14 +34,14 @@ public class ClinicalHistoryController {
     public ResponseEntity<ClinicalHistoryEntry> register(@RequestBody ClinicalNoteRequest request) {
         ClinicalHistoryEntry entry = recordDiagnosticResultUseCase.record(new RecordDiagnosticResultCommand(
                 request.patientIdNumber(),
-                request.attendedAt(),
                 request.doctorIdNumber(),
-                request.reason(),
-                request.symptoms(),
                 request.diagnosis(),
+                request.attendedAt(),
                 request.diagnosticAidOrderNumber(),
                 request.diagnosticAidItemNumber(),
-                request.diagnosticAidResult()
+                request.diagnosticAidResult(),
+                request.reason(),
+                request.symptoms()
         ));
         return ResponseEntity.ok(entry);
     }

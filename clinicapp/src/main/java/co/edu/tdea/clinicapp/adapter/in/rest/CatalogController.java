@@ -66,7 +66,6 @@ public class CatalogController {
         Medication medication = upsertMedicationUseCase.upsert(new UpsertMedicationCommand(
                 request.id(),
                 request.name(),
-                request.description(),
                 request.unitPrice()
         ));
         return ResponseEntity.ok(medication);
@@ -74,7 +73,7 @@ public class CatalogController {
 
     @DeleteMapping("/medications/{id}")
     public ResponseEntity<Void> deleteMedication(@PathVariable String id) {
-        deleteMedicationUseCase.delete(id);
+        deleteMedicationUseCase.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -88,17 +87,14 @@ public class CatalogController {
         Procedure procedure = upsertProcedureUseCase.upsert(new UpsertProcedureCommand(
                 request.id(),
                 request.name(),
-                request.description(),
-                request.cost(),
-                request.requiresSpecialist(),
-                request.specialistTypeId()
+                request.cost()
         ));
         return ResponseEntity.ok(procedure);
     }
 
     @DeleteMapping("/procedures/{id}")
     public ResponseEntity<Void> deleteProcedure(@PathVariable String id) {
-        deleteProcedureUseCase.delete(id);
+        deleteProcedureUseCase.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -112,7 +108,6 @@ public class CatalogController {
         DiagnosticAid diagnosticAid = upsertDiagnosticAidUseCase.upsert(new UpsertDiagnosticAidCommand(
                 request.id(),
                 request.name(),
-                request.description(),
                 request.cost()
         ));
         return ResponseEntity.ok(diagnosticAid);
@@ -120,14 +115,13 @@ public class CatalogController {
 
     @DeleteMapping("/diagnostic-aids/{id}")
     public ResponseEntity<Void> deleteDiagnosticAid(@PathVariable String id) {
-        deleteDiagnosticAidUseCase.delete(id);
+        deleteDiagnosticAidUseCase.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    public record MedicationRequest(String id, String name, String description, double unitPrice) { }
+    public record MedicationRequest(String id, String name, int unitPrice) { }
 
-    public record ProcedureRequest(String id, String name, String description, double cost,
-                                   boolean requiresSpecialist, String specialistTypeId) { }
+    public record ProcedureRequest(String id, String name, int cost) { }
 
-    public record DiagnosticAidRequest(String id, String name, String description, double cost) { }
+    public record DiagnosticAidRequest(String id, String name, int cost) { }
 }

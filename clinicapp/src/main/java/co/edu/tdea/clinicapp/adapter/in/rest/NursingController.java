@@ -6,6 +6,7 @@ import co.edu.tdea.clinicapp.application.port.in.PerformProcedureCommand;
 import co.edu.tdea.clinicapp.application.port.in.PerformProcedureUseCase;
 import co.edu.tdea.clinicapp.application.port.in.RecordVitalSignsCommand;
 import co.edu.tdea.clinicapp.application.port.in.RecordVitalSignsUseCase;
+import co.edu.tdea.clinicapp.domain.model.NursingRecord;
 import co.edu.tdea.clinicapp.domain.model.VitalSignsRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,48 +36,52 @@ public class NursingController {
         VitalSignsRecord record = recordVitalSignsUseCase.record(new RecordVitalSignsCommand(
                 request.patientIdNumber(),
                 request.nurseIdNumber(),
+                request.measuredAt() != null ? request.measuredAt() : LocalDateTime.now(),
+                request.systolic(),
+                request.diastolic(),
                 request.temperature(),
-                request.heartRate(),
-                request.bloodPressure(),
-                request.respiratoryRate(),
-                request.oxygenSaturation(),
-                request.measuredAt()
+                request.pulse(),
+                request.oxygenSaturation()
         ));
         return ResponseEntity.ok(record);
     }
 
     @PostMapping("/medications")
-    public ResponseEntity<Void> administerMedication(@RequestBody AdministerMedicationRequest request) {
-        administerMedicationUseCase.administer(new AdministerMedicationCommand(
-                request.orderNumber(),
-                request.itemNumber(),
+    public ResponseEntity<NursingRecord> administerMedication(@RequestBody AdministerMedicationRequest request) {
+        NursingRecord record = administerMedicationUseCase.administer(new AdministerMedicationCommand(
+                request.patientIdNumber(),
                 request.nurseIdNumber(),
+                request.medicationId(),
+                request.quantity(),
                 request.performedAt()
         ));
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(record);
     }
 
     @PostMapping("/procedures")
-    public ResponseEntity<Void> performProcedure(@RequestBody PerformProcedureRequest request) {
-        performProcedureUseCase.perform(new PerformProcedureCommand(
-                request.orderNumber(),
-                request.itemNumber(),
+    public ResponseEntity<NursingRecord> performProcedure(@RequestBody PerformProcedureRequest request) {
+        NursingRecord record = performProcedureUseCase.perform(new PerformProcedureCommand(
+                request.patientIdNumber(),
                 request.nurseIdNumber(),
+                request.procedureId(),
+                request.quantity(),
                 request.performedAt()
         ));
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(record);
     }
 
     public record VitalSignsRequest(String patientIdNumber,
                                     String nurseIdNumber,
-                                    double temperature,
-                                    int heartRate,
-                                    String bloodPressure,
-                                    int respiratoryRate,
-                                    int oxygenSaturation,
+                                    Integer systolic,
+                                    Integer diastolic,
+                                    Double temperature,
+                                    Integer pulse,
+                                    Integer oxygenSaturation,
                                     LocalDateTime measuredAt) { }
 
-    public record AdministerMedicationRequest(int orderNumber, int itemNumber, String nurseIdNumber, LocalDateTime performedAt) { }
+    public record AdministerMedicationRequest(String patientIdNumber, String nurseIdNumber,
+                                              String medicationId, int quantity, LocalDateTime performedAt) { }
 
-    public record PerformProcedureRequest(int orderNumber, int itemNumber, String nurseIdNumber, LocalDateTime performedAt) { }
+    public record PerformProcedureRequest(String patientIdNumber, String nurseIdNumber,
+                                          String procedureId, int quantity, LocalDateTime performedAt) { }
 }

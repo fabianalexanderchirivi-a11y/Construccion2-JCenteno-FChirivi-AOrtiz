@@ -1,6 +1,8 @@
 package co.edu.tdea.clinicapp.adapter.in.rest;
 
+import co.edu.tdea.clinicapp.application.port.in.CreateOrderCommand;
 import co.edu.tdea.clinicapp.application.port.in.CreateOrderUseCase;
+import co.edu.tdea.clinicapp.application.port.in.DiagnosticAidItemInput;
 import co.edu.tdea.clinicapp.application.port.in.ListOrdersByPatientUseCase;
 import co.edu.tdea.clinicapp.application.port.in.MedicationItemInput;
 import co.edu.tdea.clinicapp.application.port.in.OrderItemSummaryDto;
@@ -12,6 +14,7 @@ import co.edu.tdea.clinicapp.application.port.in.ProcedureItemInput;
 import co.edu.tdea.clinicapp.application.port.in.RequestDiagnosticAidCommand;
 import co.edu.tdea.clinicapp.application.port.in.RequestDiagnosticAidUseCase;
 import co.edu.tdea.clinicapp.domain.model.Order;
+import co.edu.tdea.clinicapp.domain.model.OrderType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +62,7 @@ public class OrderController {
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
                 request.items().stream()
-                        .map(i -> new ProcedureItemInput(i.procedureId(), i.times(), i.frequency()))
+                        .map(i -> new ProcedureItemInput(i.procedureId(), i.times(), i.frequency(), i.specialist()))
                         .toList()
         ));
         return ResponseEntity.ok(order);
@@ -70,7 +73,9 @@ public class OrderController {
         Order order = requestDiagnosticAidUseCase.request(new RequestDiagnosticAidCommand(
                 request.patientIdNumber(),
                 request.doctorIdNumber(),
-                request.items()
+                request.items().stream()
+                        .map(i -> new DiagnosticAidItemInput(i.diagnosticAidId(), i.quantity()))
+                        .toList()
         ));
         return ResponseEntity.ok(order);
     }
@@ -81,9 +86,16 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> createBaseOrder(@RequestBody CreateOrderRequest request) {
-        int number = createOrderUseCase.create(request.patientIdNumber(), request.doctorIdNumber());
-        return ResponseEntity.ok(number);
+    public ResponseEntity<Void> createBaseOrder(@RequestBody CreateOrderRequest request) {
+        createOrderUseCase.create(new CreateOrderCommand(
+                request.patientIdNumber(),
+                request.doctorIdNumber(),
+                request.type(),
+                request.items().stream()
+                        .map(i -> new CreateOrderCommand.Item(i.catalogId(), i.quantity()))
+                        .toList()
+        ));
+        return ResponseEntity.noContent().build();
     }
 
     public record MedicationOrderRequest(String patientIdNumber, String doctorIdNumber, List<MedicationItemRequest> items) { }
@@ -92,9 +104,13 @@ public class OrderController {
 
     public record ProcedureOrderRequest(String patientIdNumber, String doctorIdNumber, List<ProcedureItemRequest> items) { }
 
-    public record ProcedureItemRequest(String procedureId, int times, String frequency) { }
+    public record ProcedureItemRequest(String procedureId, int times, String frequency, String specialist) { }
 
-    public record DiagnosticAidOrderRequest(String patientIdNumber, String doctorIdNumber, List<String> items) { }
+    public record DiagnosticAidOrderRequest(String patientIdNumber, String doctorIdNumber, List<DiagnosticAidItemRequest> items) { }
 
-    public record CreateOrderRequest(String patientIdNumber, String doctorIdNumber) { }
+    public record DiagnosticAidItemRequest(String diagnosticAidId, int quantity) { }
+
+    public record CreateOrderRequest(String patientIdNumber, String doctorIdNumber, OrderType type, List<CreateOrderItemRequest> items) { }
+
+    public record CreateOrderItemRequest(String catalogId, int quantity) { }
 }
