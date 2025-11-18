@@ -86,6 +86,15 @@ Todos los endpoints se protegen con JWT y autorización basada en roles, según 
 
 Si alguna operación permitida retorna 401, verifica que el header `Authorization` incluya el JWT (`Bearer <token>`). Si una operación debería permitirse y devuelve 403, revisa el rol configurado en la tabla `accounts` para ese usuario.
 
+### Depurar 403 en órdenes médicas (rol DOCTOR)
+
+1. Haz login con un usuario cuyo `role` en `accounts` sea exactamente `DOCTOR` (ej.: `med1`).
+2. Decodifica el JWT en https://jwt.io y verifica en el *Payload* que `"role":"DOCTOR"` y `"sub"` corresponda al usuario médico.
+3. Usa ese token en `Authorization: Bearer <token>` y llama a:
+   - `GET http://localhost:8081/api/orders` (listar)
+   - `POST http://localhost:8081/api/orders` o `/api/orders/medications|procedures|diagnostic-aids` con el cuerpo requerido.
+4. Si aún ves 403, asegúrate de no reutilizar un token de otro rol y de que el header Authorization esté activo en Postman (sin comillas ni los signos `< >`).
+
 ## Uso en Postman paso a paso
 
 1. **Login** (pestaña *Body* → *raw* → *JSON*):
