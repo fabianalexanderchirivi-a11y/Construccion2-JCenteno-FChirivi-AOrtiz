@@ -18,7 +18,10 @@ import co.edu.tdea.clinicapp.config.JwtProperties;
                         pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.in\\.security\\.SecurityConfig"),
                 @ComponentScan.Filter(
                         type = FilterType.REGEX,
-                        pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.out\\.security\\.AuthBeansConfig")
+                        pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.out\\.security\\.AuthBeansConfig"),
+                @ComponentScan.Filter(
+                        type = FilterType.REGEX,
+                        pattern = "co\\.edu\\.tdea\\.clinicapp\\.adapter\\.out\\.persistence\\.jpa\\.clinical\\..*")
         })
 @EnableConfigurationProperties(JwtProperties.class)
 public class ClinicAppApplication {
