@@ -2,10 +2,12 @@ package co.edu.tdea.clinicapp.adapter.out.security;
 
 import co.edu.tdea.clinicapp.adapter.out.persistence.jpa.auth.AccountEntity;
 import co.edu.tdea.clinicapp.adapter.out.persistence.jpa.auth.SpringDataAccountRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service("jpaUserDetailsService")
+@Primary
 public class JpaUserDetailsService implements UserDetailsService {
 
     private final SpringDataAccountRepository repository;
